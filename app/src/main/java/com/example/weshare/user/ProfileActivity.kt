@@ -35,8 +35,9 @@ class ProfileActivity : AppCompatActivity() {
                 if (user != null) {
                     val currentUserId = it.userId ?: return@getUserByEmail
                     profileName.text = user.name
-                    profilePhoneNumber.hint = user.phoneNumber.toString()
+                    profilePhoneNumber.hint = user.phoneNumber
                     profileEmail.hint = user.email
+                    Toast.makeText(this, "$currentUserId, ${user.name}, ${user.phoneNumber}, ${user.email}", Toast.LENGTH_SHORT).show()
 
                     profileUpdateButton.setOnClickListener {
                         var newPhoneNumber = user.phoneNumber // default to the current phone number
