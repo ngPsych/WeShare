@@ -67,6 +67,7 @@ class ManageUsersActivity : AppCompatActivity()  {
     private fun addMemberToGroup(groupId: String, newMemberEmail: String) {
         groupRepository.addMemberToGroup(groupId, newMemberEmail) { success, errorMessage ->
             if (success) {
+                loadGroupMembers(groupId)
                 Toast.makeText(this, "Member added successfully", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, "Error adding member: $errorMessage", Toast.LENGTH_SHORT).show()
@@ -102,11 +103,13 @@ class ManageUsersActivity : AppCompatActivity()  {
 
     private fun removeMemberFromGroup(groupId: String, memberEmail: String) {
         groupRepository.removeMemberFromGroup(groupId, memberEmail) { success, errorMessage ->
-            if (success) {
-                Toast.makeText(this, "Member removed successfully", Toast.LENGTH_SHORT).show()
-                loadGroupMembers(groupId) // Reload the members list
-            } else {
-                Toast.makeText(this, "Error removing member: $errorMessage", Toast.LENGTH_SHORT).show()
+            runOnUiThread {
+                if (success) {
+                    Toast.makeText(this, "Member removed successfully", Toast.LENGTH_SHORT).show()
+                    loadGroupMembers(groupId) // Reload the members list
+                } else {
+                    Toast.makeText(this, "Error removing member: $errorMessage", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
