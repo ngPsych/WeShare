@@ -23,8 +23,8 @@ class ProfileActivity : AppCompatActivity() {
 
         val profileName: TextView = findViewById(R.id.profileName)
         val profileNotificationSwitch: Switch = findViewById(R.id.profileNotificationSwitch)
+        val profileEmail: TextView = findViewById(R.id.profileEmail)
         val profilePhoneNumber: EditText = findViewById(R.id.profilePhoneNumber)
-        val profileEmail: EditText = findViewById(R.id.profileEmail)
         val profilePassword: EditText = findViewById(R.id.profilePassword)
         val profileConfirmPassword: EditText = findViewById(R.id.profileConfirmPassword)
         val profileUpdateButton: Button = findViewById(R.id.profileUpdateButton)
@@ -40,17 +40,11 @@ class ProfileActivity : AppCompatActivity() {
 
                     profileUpdateButton.setOnClickListener {
                         var newPhoneNumber = user.phoneNumber // default to the current phone number
-                        var newEmail = user.email // default to the current email
 
                         if (profilePhoneNumber.text.isNotEmpty()) {
                             newPhoneNumber = profilePhoneNumber.text.toString()
                         } else {
                             Toast.makeText(this, "EMAIL IS EMPTY", Toast.LENGTH_SHORT).show()
-                        }
-
-                        if (profileEmail.text.isNotEmpty()) {
-                            newEmail = profileEmail.text.toString()
-                            updateEmail(newEmail)
                         }
 
                         val newPassword = profilePassword.text.toString()
@@ -64,9 +58,7 @@ class ProfileActivity : AppCompatActivity() {
 
                         // Create an updated user object
                         val updatedUser = User(
-                            name = user.name, // assuming name is not being updated
-                            phoneNumber = newPhoneNumber,
-                            email = newEmail
+                            phoneNumber = newPhoneNumber
                         )
 
                         // Call updateUser to update the user's information in Firestore
@@ -90,17 +82,6 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun updateEmail(newEmail: String) {
-        authManager.updateEmail(newEmail) { isSuccess, errorMessage ->
-            if (isSuccess) {
-                Toast.makeText(this, "Email updated successfully", Toast.LENGTH_SHORT).show()
-                // Handle successful email update
-            } else {
-                Toast.makeText(this, "Failed to update email: $errorMessage", Toast.LENGTH_LONG).show()
-                // Handle failure
-            }
-        }
-    }
 
     // Add methods to update user profile, handle inputs, etc
     private fun updatePassword(newPassword: String) {

@@ -1,7 +1,9 @@
 package com.example.weshare.user
 
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+
 
 class AuthManager {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -43,26 +45,6 @@ class AuthManager {
                 phoneNumber = user.phoneNumber ?: "Unknown",
                 email = user.email ?: "Unknown"
             )
-        }
-    }
-
-    fun updateEmail(newEmail: String, onComplete: (Boolean, String?) -> Unit) {
-        val currentUser = auth.currentUser
-
-        if (currentUser != null) {
-            currentUser.updateEmail(newEmail)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        // Email update is successful
-                        onComplete(true, null)
-                    } else {
-                        // Email update failed
-                        onComplete(false, task.exception?.message)
-                    }
-                }
-        } else {
-            // User is not logged in or the user object is null
-            onComplete(false, "User not logged in")
         }
     }
 
