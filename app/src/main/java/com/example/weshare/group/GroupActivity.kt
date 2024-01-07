@@ -72,7 +72,9 @@ class GroupActivity : AppCompatActivity() {
 
                 groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
                     if (group != null) {
-                        addMemberToGroup(groupId.toString(), email)
+                        addButton.setOnClickListener {
+                            addMemberToGroup(groupId.toString(), email)
+                        }
                     } else {
                         // Handle the case where no group is found or there's an error
                         Toast.makeText(this, "Group not found or error occurred", Toast.LENGTH_SHORT).show()
