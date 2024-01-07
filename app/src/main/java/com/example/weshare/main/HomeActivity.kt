@@ -45,7 +45,7 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
 
-            userRepository.getUserByEmail(email) { user ->
+            userRepository.getUserByEmail(email) { user, _ ->
                 user?.let {
                     val phoneNumber = it.phoneNumber // Extracting phone number
 
