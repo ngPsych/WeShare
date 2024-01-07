@@ -58,7 +58,9 @@ class ProfileActivity : AppCompatActivity() {
 
                         // Create an updated user object
                         val updatedUser = User(
-                            phoneNumber = newPhoneNumber
+                            name = user.name,
+                            phoneNumber = newPhoneNumber,
+                            email = user.email
                         )
 
                         // Call updateUser to update the user's information in Firestore
