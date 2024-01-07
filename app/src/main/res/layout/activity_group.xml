@@ -126,17 +126,12 @@
 
         <Button
             android:id="@+id/addUserButton"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="ADD USER"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:text="ADD USER" />
 
-        <Button
-            android:id="@+id/backToHomeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BACK"
-            android:layout_margin="10dp"/>
+
 
         <Button
             android:id="@+id/addExpenseButton"
@@ -144,6 +139,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="ADD EXPENSE"
+            android:layout_margin="10dp"/>
+
+        <Button
+            android:id="@+id/manageUsersButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="MANAGE USERS"
+            android:layout_margin="10dp"/>
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BACK"
             android:layout_margin="10dp"/>
     </LinearLayout>
 

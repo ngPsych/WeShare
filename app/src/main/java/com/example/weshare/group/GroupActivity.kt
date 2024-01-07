@@ -1,5 +1,6 @@
 package com.example.weshare.group
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Button
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weshare.R
 import com.example.weshare.adapters.GroupAdapter
+import com.example.weshare.main.HomeActivity
 import com.example.weshare.user.AuthManager
 import com.example.weshare.user.UserRepository
 
@@ -28,7 +30,9 @@ class GroupActivity : AppCompatActivity() {
 
         val groupNameTextView: TextView = findViewById(R.id.groupNameTextView)
         val descriptionTextView: TextView = findViewById(R.id.descriptionTextView)
-        val addUserButton: Button = findViewById(R.id.addUserButton)
+        val addExpenseButton: Button = findViewById(R.id.addExpenseButton)
+        val manageUsersButton: Button = findViewById(R.id.manageUsersButton)
+        val backButton: Button = findViewById(R.id.backButton)
 
         groupNameTextView.text = groupName
         descriptionTextView.text = groupDescription
@@ -42,46 +46,37 @@ class GroupActivity : AppCompatActivity() {
             }
         }
 
-        addUserButton.setOnClickListener {
-            showAddUserDialog(groupName, groupDescription)
+        manageUsersButton.setOnClickListener {
+            navigateToManageUsers(groupName, groupDescription)
+        }
+
+        backButton.setOnClickListener {
+            navigateToHome()
         }
 
     }
 
-    private fun addMemberToGroup(groupId: String, newMemberEmail: String) {
-        groupRepository.addMemberToGroup(groupId, newMemberEmail) { success, errorMessage ->
-            if (success) {
-                Toast.makeText(this, "Member added successfully", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Error adding member: $errorMessage", Toast.LENGTH_SHORT).show()
-            }
-        }
+    private fun navigateToHome() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
     }
 
-    private fun showAddUserDialog(groupName: String, groupDescription: String) {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_user, null)
-        val editTextEmailAddress: EditText = dialogView.findViewById(R.id.editTextEmailAddress)
-
-        // Create the AlertDialog
-        val dialog = AlertDialog.Builder(this)
-            .setTitle("Add User")
-            .setView(dialogView)
-            .setPositiveButton("Add") { dialog, which ->
-                val email = editTextEmailAddress.text.toString()
-
-                groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
-                    if (group != null) {
-                            addMemberToGroup(groupId.toString(), email)
-                    } else {
-                        // Handle the case where no group is found or there's an error
-                        Toast.makeText(this, "Group not found or error occurred", Toast.LENGTH_SHORT).show()
-                    }
+    private fun navigateToManageUsers(groupName: String, groupDescription: String) {
+        groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
+            if (group != null) {
+                val intent = Intent(this, ManageUsersActivity::class.java).apply {
+                    putExtra("GROUP_ID", groupId)
+                    putExtra("GROUP_NAME", groupName)
+                    putExtra("GROUP_DESCRIPTION", groupDescription)
                 }
+                startActivity(intent)
+            } else {
+                // Handle the case where no group is found or there's an error
+                Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Cancel", null)
-            .create()
+        }
 
-        dialog.show()
+
     }
 
 }

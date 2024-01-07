@@ -2,10 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <!-- Define variables for data binding here if needed -->
-    </data>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,5 +36,12 @@
                 android:layout_height="wrap_content"
                 tools:text="user@example.com" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/removeUserButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="REMOVE" />
+
     </LinearLayout>
 </layout>

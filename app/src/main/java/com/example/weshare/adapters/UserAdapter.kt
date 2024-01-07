@@ -1,39 +1,34 @@
-package com.example.weshare.adapters
-
+import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import com.example.weshare.R
 import com.example.weshare.user.User
-import com.example.weshare.databinding.ItemUserBinding
 
-class UserAdapter(var users: MutableList<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(context: Context, private val users: List<User>) : ArrayAdapter<User>(context, 0, users) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return UserViewHolder(binding)
-    }
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_user, parent, false)
 
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        val user = users[position]
-        holder.bind(user)
-    }
+        val user = getItem(position)
+        val userNameTextView = view.findViewById<TextView>(R.id.userNameTextView)
+        val userEmailTextView = view.findViewById<TextView>(R.id.userEmailTextView)
+        val removeUserButton = view.findViewById<Button>(R.id.removeUserButton)
 
-    override fun getItemCount() = users.size
+        userNameTextView.text = user?.name
+        userEmailTextView.text = user?.email
 
-    class UserViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(user: User) {
-            binding.userNameTextView.text = user.name
-            // Bind other views in the holder as needed
+        removeUserButton.setOnClickListener {
+            // Implement removal logic here
+            // For example, remove the user from the list and notify the adapter
+            // users.removeAt(position)
+            // notifyDataSetChanged()
         }
-    }
 
-    fun updateUsers(newUsers: List<User>) {
-        this.users.clear() // Clears the current list
-        this.users.addAll(newUsers) // Adds all the new users
-        this.notifyDataSetChanged() // Notifies the adapter to refresh the list
-    }
-
-    interface OnUserClickListener {
-        fun onUserClick(user: User)
+        return view
     }
 }

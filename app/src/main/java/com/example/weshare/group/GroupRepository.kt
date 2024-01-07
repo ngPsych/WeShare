@@ -96,4 +96,43 @@ class GroupRepository {
                 onComplete(null, null) // Error occurred during fetching
             }
     }
+
+    fun getGroupMembers(groupId: String, onComplete: (List<String>?, String?) -> Unit) {
+        val groupRef = db.collection("groups").document(groupId)
+
+        groupRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val group = document.toObject(Group::class.java)
+                    val members = group?.members ?: listOf()
+                    onComplete(members, null) // Return the list of members
+                } else {
+                    onComplete(null, "Group not found")
+                }
+            }
+            .addOnFailureListener { exception ->
+                onComplete(null, exception.message) // Error occurred during fetching
+            }
+    }
+
+    fun removeMemberFromGroup(groupId: String, memberEmail: String, onComplete: (Boolean, String?) -> Unit) {
+        val groupRef = db.collection("groups").document(groupId)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(groupRef)
+            val group = snapshot.toObject(Group::class.java)
+            val currentMembers = group?.members?.toMutableList() ?: mutableListOf()
+
+            if (memberEmail in currentMembers) {
+                currentMembers.remove(memberEmail)
+                transaction.update(groupRef, "members", currentMembers)
+                onComplete(true, null) // Member removed successfully
+            } else {
+                onComplete(false, "Member not found in group") // Member not in group
+            }
+        }.addOnFailureListener { exception ->
+            onComplete(false, exception.message) // Error in removing member
+        }
+    }
+
 }
