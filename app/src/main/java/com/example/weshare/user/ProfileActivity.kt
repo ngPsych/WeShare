@@ -33,12 +33,12 @@ class ProfileActivity : AppCompatActivity() {
         userRepository.getUserByEmail(email) { user ->
             user?.let {
                 if (user != null) {
+                    val currentUserId = it.userId ?: return@getUserByEmail
                     profileName.text = user.name
                     profilePhoneNumber.hint = user.phoneNumber.toString()
                     profileEmail.hint = user.email
 
                     profileUpdateButton.setOnClickListener {
-                        val currentUserId = authManager.getCurrentUser()?.uid ?: return@setOnClickListener
                         var newPhoneNumber = user.phoneNumber // default to the current phone number
                         var newEmail = user.email // default to the current email
 
@@ -58,7 +58,7 @@ class ProfileActivity : AppCompatActivity() {
                         if (newPassword == confirmPassword && newPassword.isNotEmpty()) {
                             updatePassword(newPassword)
                         } else {
-                            Toast.makeText(this, "PASSWORD DOES NOT MATCH", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "PASSWORD IS EMPTY OR DOES NOT MATCH", Toast.LENGTH_SHORT).show()
                         }
 
                         // Create an updated user object
