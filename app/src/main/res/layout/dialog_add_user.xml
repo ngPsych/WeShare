@@ -11,10 +11,4 @@
         android:hint="Enter email address"
         android:inputType="textEmailAddress" />
 
-    <Button
-        android:id="@+id/addButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ADD" />
-
 </LinearLayout>

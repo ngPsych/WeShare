@@ -61,7 +61,6 @@ class GroupActivity : AppCompatActivity() {
     private fun showAddUserDialog(groupName: String, groupDescription: String) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_user, null)
         val editTextEmailAddress: EditText = dialogView.findViewById(R.id.editTextEmailAddress)
-        val addButton: Button = dialogView.findViewById(R.id.addButton)
 
         // Create the AlertDialog
         val dialog = AlertDialog.Builder(this)
@@ -72,9 +71,7 @@ class GroupActivity : AppCompatActivity() {
 
                 groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
                     if (group != null) {
-                        addButton.setOnClickListener {
                             addMemberToGroup(groupId.toString(), email)
-                        }
                     } else {
                         // Handle the case where no group is found or there's an error
                         Toast.makeText(this, "Group not found or error occurred", Toast.LENGTH_SHORT).show()
