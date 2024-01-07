@@ -61,7 +61,7 @@ class GroupActivity : AppCompatActivity() {
     private fun showAddUserDialog(groupName: String, groupDescription: String) {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_user, null)
         val editTextEmailAddress: EditText = dialogView.findViewById(R.id.editTextEmailAddress)
-        val addButton: Button = findViewById(R.id.addButton)
+        val addButton: Button = dialogView.findViewById(R.id.addButton)
 
         // Create the AlertDialog
         val dialog = AlertDialog.Builder(this)
