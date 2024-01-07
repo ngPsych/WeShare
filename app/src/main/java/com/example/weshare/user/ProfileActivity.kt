@@ -32,6 +32,7 @@ class ProfileActivity : AppCompatActivity() {
 
         userRepository.getUserByEmail(email) { user ->
             user?.let {
+                Toast.makeText(this, "$user", Toast.LENGTH_SHORT).show()
                 if (user != null) {
                     val currentUserId = it.userId ?: return@getUserByEmail
                     profileName.text = user.name
