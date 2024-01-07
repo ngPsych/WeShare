@@ -36,12 +36,11 @@ class UserRepository {
     }
 
     fun createUser(user: User, onComplete: (Boolean, String?) -> Unit) {
-        val newUser = user.copy(userId = null) // Remove userId before saving
-        db.collection("users").add(newUser)
+        db.collection("users").add(user)
             .addOnSuccessListener { documentReference ->
-                val userId = documentReference.id
-                // Optionally, update the user's userId field in Firestore here
-                onComplete(true, userId)
+                val generatedUserId = documentReference.id // Firestore-generated ID
+                // The generatedUserId can be used if needed, otherwise, it's just confirmation of successful creation
+                onComplete(true, generatedUserId)
             }
             .addOnFailureListener {
                 onComplete(false, null)
@@ -49,7 +48,7 @@ class UserRepository {
     }
 
     fun updateUser(userId: String, updatedUser: User, onComplete: (Boolean) -> Unit) {
-        db.collection("users").document(userId).set(updatedUser.copy(userId = userId))
+        db.collection("users").document(userId).set(updatedUser)
             .addOnSuccessListener {
                 onComplete(true)
             }

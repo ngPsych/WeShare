@@ -49,16 +49,20 @@ class AuthManager {
     // Update the password for the current user
     fun updatePassword(newPassword: String, onComplete: (Boolean, String?) -> Unit) {
         val currentUser = auth.currentUser
+
         if (currentUser != null) {
             currentUser.updatePassword(newPassword)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        // Password update is successful
                         onComplete(true, null)
                     } else {
+                        // Password update failed
                         onComplete(false, task.exception?.message)
                     }
                 }
         } else {
+            // User is not logged in or the user object is null
             onComplete(false, "User not logged in")
         }
     }
