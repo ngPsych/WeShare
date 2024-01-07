@@ -45,22 +45,35 @@ class GroupRepository {
     }
 
     fun addMemberToGroup(groupId: String, newMemberEmail: String, onComplete: (Boolean, String?) -> Unit) {
+        val usersRef = db.collection("users")
         val groupRef = db.collection("groups").document(groupId)
 
-        db.runTransaction { transaction ->
-            val snapshot = transaction.get(groupRef)
-            val group = snapshot.toObject(Group::class.java)
-            val currentMembers = group?.members ?: listOf()
+        // Check if the user exists
+        usersRef.whereEqualTo("email", newMemberEmail).limit(1).get()
+            .addOnSuccessListener { users ->
+                if (!users.isEmpty) {
+                    // User exists, proceed to add to group
+                    db.runTransaction { transaction ->
+                        val snapshot = transaction.get(groupRef)
+                        val group = snapshot.toObject(Group::class.java)
+                        val currentMembers = group?.members ?: listOf()
 
-            if (newMemberEmail !in currentMembers) {
-                val updatedMembers = currentMembers + newMemberEmail
-                transaction.update(groupRef, "members", updatedMembers)
+                        if (newMemberEmail !in currentMembers) {
+                            val updatedMembers = currentMembers + newMemberEmail
+                            transaction.update(groupRef, "members", updatedMembers)
+                        }
+                    }.addOnSuccessListener {
+                        onComplete(true, null) // Member added successfully
+                    }.addOnFailureListener { exception ->
+                        onComplete(false, exception.message) // Error in adding member
+                    }
+                } else {
+                    onComplete(false, "User not found") // User does not exist
+                }
             }
-        }.addOnSuccessListener {
-            onComplete(true, null) // Member added successfully
-        }.addOnFailureListener { exception ->
-            onComplete(false, exception.message) // Error in adding member
-        }
+            .addOnFailureListener { exception ->
+                onComplete(false, exception.message) // Error checking user existence
+            }
     }
 
     fun getCurrentGroupDetails(groupName: String, groupDescription: String, onComplete: (Group?, String?) -> Unit) {
