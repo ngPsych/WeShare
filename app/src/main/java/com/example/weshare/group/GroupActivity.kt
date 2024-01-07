@@ -5,11 +5,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weshare.R
+import com.example.weshare.adapters.GroupAdapter
 import com.example.weshare.user.AuthManager
+import com.example.weshare.user.UserRepository
 
 class GroupActivity : AppCompatActivity() {
 
     private val authManager = AuthManager()
+    private val userRepository = UserRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +27,14 @@ class GroupActivity : AppCompatActivity() {
         groupNameTextView.text = groupName
         descriptionTextView.text = groupDescription
 
-        val nameTextView: TextView = findViewById(R.id.nameTextView)
-        nameTextView.text = authManager.getCurrentUserDetails()?.name
-        Toast.makeText(this, "${authManager.getCurrentUserDetails()}", Toast.LENGTH_SHORT).show()
+        userRepository.getUserByEmail(authManager.getCurrentUserDetails()?.email.toString()) { user, _ ->
+            user?.let {
+                val name = it.name
+
+                val nameTextView: TextView = findViewById(R.id.nameTextView)
+                nameTextView.text = name
+            }
+        }
 
     }
 
