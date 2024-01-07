@@ -50,6 +50,7 @@ class ProfileActivity : AppCompatActivity() {
 
                         if (profileEmail.text.isNotEmpty()) {
                             newEmail = profileEmail.text.toString()
+                            updateEmail(newEmail)
                         }
 
                         val newPassword = profilePassword.text.toString()
@@ -84,6 +85,18 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
+    private fun updateEmail(newEmail: String) {
+        authManager.updateEmail(newEmail) { isSuccess, errorMessage ->
+            if (isSuccess) {
+                Toast.makeText(this, "Email updated successfully", Toast.LENGTH_SHORT).show()
+                // Handle successful email update
+            } else {
+                Toast.makeText(this, "Failed to update email: $errorMessage", Toast.LENGTH_LONG).show()
+                // Handle failure
+            }
+        }
+    }
+
     // Add methods to update user profile, handle inputs, etc
     private fun updatePassword(newPassword: String) {
         if (newPassword.isNotEmpty()) {
@@ -100,4 +113,5 @@ class ProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Please enter a new password", Toast.LENGTH_SHORT).show()
         }
     }
+
 }
