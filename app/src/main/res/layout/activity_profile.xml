@@ -89,10 +89,10 @@
             android:text="UPDATE" />
 
         <Button
-            android:id="@+id/profileUpdateButton"
+            android:id="@+id/profileCancelButton"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="UPDATE" />
+            android:text="CANCEL" />
 
 
     </LinearLayout>

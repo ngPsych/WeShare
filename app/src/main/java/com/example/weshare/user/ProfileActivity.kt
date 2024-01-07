@@ -1,5 +1,6 @@
 package com.example.weshare.user
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -8,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weshare.R
+import com.example.weshare.main.HomeActivity
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -28,6 +30,7 @@ class ProfileActivity : AppCompatActivity() {
         val profilePassword: EditText = findViewById(R.id.profilePassword)
         val profileConfirmPassword: EditText = findViewById(R.id.profileConfirmPassword)
         val profileUpdateButton: Button = findViewById(R.id.profileUpdateButton)
+        val profileCancelButton: Button = findViewById(R.id.profileCancelButton)
 
         userRepository.getUserByEmail(email) { user, userId ->
             user?.let {
@@ -82,8 +85,17 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
+        profileCancelButton.setOnClickListener {
+            navigateToHome()
+        }
+
     }
 
+    private fun navigateToHome() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 
     // Add methods to update user profile, handle inputs, etc
     private fun updatePassword(newPassword: String) {
