@@ -28,27 +28,32 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
 
         val userId = authManager.getCurrentUserDetails()?.userId ?: ""
-        val phoneNumber = authManager.getCurrentUserDetails()?.phoneNumber ?: ""
-        //Toast.makeText(this, "UserID: $userId", Toast.LENGTH_LONG).show()
-        print("UserID: $userId")
+        val email = authManager.getCurrentUserDetails()?.email ?: ""
+
+        Toast.makeText(this, "Email: $email", Toast.LENGTH_LONG).show()
 
         val profilePicImageView: ImageView = findViewById(R.id.homeProfilePic)
         val signOutButton: Button = findViewById(R.id.signOutButton)
         val addGroupButton: FloatingActionButton = findViewById(R.id.addGroupButton)
         val groupListView: ListView = findViewById(R.id.groupListView)
-        val currentUserPhoneNumber = authManager.getCurrentUserDetails()?.phoneNumber ?: ""
 
         if (userId.isNotEmpty()) {
-            userRepository.getUser(phoneNumber) { user ->
+            userRepository.getUser(email) { user ->
                 user?.let {
                     val name = it.name
                     Toast.makeText(this, "Hi $name", Toast.LENGTH_LONG).show()
                 }
             }
 
-            groupAdapter = GroupAdapter(this, mutableListOf())
-            groupListView.adapter = groupAdapter
-            fetchGroupsAndUpdateAdapter(currentUserPhoneNumber)
+            userRepository.getUserByEmail(email) { user ->
+                user?.let {
+                    val phoneNumber = it.phoneNumber // Extracting phone number
+
+                    groupAdapter = GroupAdapter(this, mutableListOf())
+                    groupListView.adapter = groupAdapter
+                    fetchGroupsAndUpdateAdapter(phoneNumber)
+                }
+            }
 
             signOutButton.setOnClickListener {
                 authManager.signOut()

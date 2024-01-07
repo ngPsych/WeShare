@@ -6,14 +6,32 @@ class UserRepository {
 
     private val db = FirebaseFirestore.getInstance();
 
-    fun getUser(phoneNumber: String, onComplete: (User?) -> Unit) {
-        db.collection("users").document(phoneNumber).get()
+    fun getUser(email: String, onComplete: (User?) -> Unit) {
+        db.collection("users").document(email).get()
             .addOnSuccessListener { document ->
                 val user = document.toObject(User::class.java);
                 onComplete(user);
             }
             .addOnFailureListener {
                 onComplete(null);
+            }
+    }
+
+    fun getUserByEmail(email: String, onComplete: (User?) -> Unit) {
+        db.collection("users")
+            .whereEqualTo("email", email)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val user = documents.first().toObject(User::class.java)
+                    onComplete(user)
+                } else {
+                    onComplete(null) // No user found
+                }
+            }
+            .addOnFailureListener {
+                onComplete(null)
             }
     }
 
