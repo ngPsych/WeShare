@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         val passwordEditText: EditText = findViewById(R.id.password)
         val loginButton: Button = findViewById(R.id.loginButton)
         val signupButton: Button = findViewById(R.id.signupButton)
-        val deleteDBButton: Button = findViewById(R.id.deleteDBButton)
 
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString()
@@ -51,10 +50,6 @@ class MainActivity : AppCompatActivity() {
             // Navigate to SignUpActivity
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
-        }
-
-        deleteDBButton.setOnClickListener {
-            // Implement the functionality to delete DB or relevant operation
         }
 
         // Initialize other components like userAdapter if needed
