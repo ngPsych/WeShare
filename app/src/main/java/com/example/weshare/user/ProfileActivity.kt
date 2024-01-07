@@ -8,7 +8,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weshare.R
-import com.example.weshare.adapters.GroupAdapter
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -30,15 +29,14 @@ class ProfileActivity : AppCompatActivity() {
         val profileConfirmPassword: EditText = findViewById(R.id.profileConfirmPassword)
         val profileUpdateButton: Button = findViewById(R.id.profileUpdateButton)
 
-        userRepository.getUserByEmail(email) { user ->
+        userRepository.getUserByEmail(email) { user, userId ->
             user?.let {
-                Toast.makeText(this, "$user", Toast.LENGTH_SHORT).show()
                 if (user != null) {
-                    val currentUserId = it.userId ?: return@getUserByEmail
                     profileName.text = user.name
                     profilePhoneNumber.hint = user.phoneNumber
                     profileEmail.hint = user.email
-                    Toast.makeText(this, "$currentUserId, ${user.name}, ${user.phoneNumber}, ${user.email}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        "$userId, ${user.name}, ${user.phoneNumber}, ${user.email}", Toast.LENGTH_SHORT).show()
 
                     profileUpdateButton.setOnClickListener {
                         var newPhoneNumber = user.phoneNumber // default to the current phone number
@@ -72,11 +70,16 @@ class ProfileActivity : AppCompatActivity() {
                         )
 
                         // Call updateUser to update the user's information in Firestore
-                        userRepository.updateUser(currentUserId, updatedUser) { isSuccess ->
+                        userRepository.updateUser(userId.toString(), updatedUser) { isSuccess ->
                             if (isSuccess) {
-                                Toast.makeText(this, "User updated successfully", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    "User updated successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             } else {
-                                Toast.makeText(this, "Failed to update user", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Failed to update user", Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                     }

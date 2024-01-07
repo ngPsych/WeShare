@@ -17,23 +17,26 @@ class UserRepository {
             }
     }
 
-    fun getUserByEmail(email: String, onComplete: (User?) -> Unit) {
+    fun getUserByEmail(email: String, onComplete: (User?, String?) -> Unit) {
         db.collection("users")
             .whereEqualTo("email", email)
             .limit(1)
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    val user = documents.first().toObject(User::class.java)
-                    onComplete(user)
+                    val document = documents.first() // Get the first (and only) document
+                    val user = document.toObject(User::class.java)
+                    val userId = document.id // This is the document ID
+                    onComplete(user, userId) // Pass the user object and userId (document ID)
                 } else {
-                    onComplete(null) // No user found
+                    onComplete(null, null) // No user found
                 }
             }
             .addOnFailureListener {
-                onComplete(null)
+                onComplete(null, null)
             }
     }
+
 
     fun createUser(user: User, onComplete: (Boolean, String?) -> Unit) {
         db.collection("users").add(user)
