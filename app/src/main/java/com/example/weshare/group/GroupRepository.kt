@@ -17,15 +17,15 @@ class GroupRepository {
             }
     }
 
-    fun getUserGroups(creatorEmail: String, onComplete: (List<Group>, String?) -> Unit) {
+    fun getUserGroups(userEmail: String, onComplete: (List<Group>, String?) -> Unit) {
         db.collection("groups")
-            .whereEqualTo("creator", creatorEmail)
+            .whereArrayContains("members", userEmail)
             .get()
             .addOnSuccessListener { result ->
                 val groups = result.mapNotNull { documentSnapshot ->
                     documentSnapshot.toObject(Group::class.java)
                 }
-                onComplete(groups, null) // Return the list of groups and no error message
+                onComplete(groups, null) // Return the list of groups the user is a member of
             }
             .addOnFailureListener { exception ->
                 onComplete(emptyList(), exception.message) // Return an empty list and the error message
