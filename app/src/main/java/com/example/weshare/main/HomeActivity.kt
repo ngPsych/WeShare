@@ -47,11 +47,11 @@ class HomeActivity : AppCompatActivity() {
 
             userRepository.getUserByEmail(email) { user, _ ->
                 user?.let {
-                    val phoneNumber = it.phoneNumber // Extracting phone number
+                    val email = it.email // Extracting phone number
 
                     groupAdapter = GroupAdapter(this, mutableListOf())
                     groupListView.adapter = groupAdapter
-                    fetchGroupsAndUpdateAdapter(phoneNumber)
+                    fetchGroupsAndUpdateAdapter(email)
                 }
             }
 
@@ -103,9 +103,9 @@ class HomeActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun fetchGroupsAndUpdateAdapter(currentUserPhoneNumber: String) {
+    private fun fetchGroupsAndUpdateAdapter(currentUserEmail: String) {
 
-        groupRepository.getUserGroups(currentUserPhoneNumber) { groups, error ->
+        groupRepository.getUserGroups(currentUserEmail) { groups, error ->
             if (error != null) {
                 // Handle error, maybe show a message to the user
                 print(error)

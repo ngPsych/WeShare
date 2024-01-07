@@ -88,6 +88,12 @@
             android:layout_height="wrap_content"
             android:text="UPDATE" />
 
+        <Button
+            android:id="@+id/profileUpdateButton"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="UPDATE" />
+
 
     </LinearLayout>
 

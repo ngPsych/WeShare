@@ -17,9 +17,9 @@ class GroupRepository {
             }
     }
 
-    fun getUserGroups(creatorPhoneNumber: String, onComplete: (List<Group>, String?) -> Unit) {
+    fun getUserGroups(creatorEmail: String, onComplete: (List<Group>, String?) -> Unit) {
         db.collection("groups")
-            .whereEqualTo("creator", creatorPhoneNumber)
+            .whereEqualTo("creator", creatorEmail)
             .get()
             .addOnSuccessListener { result ->
                 val groups = result.mapNotNull { documentSnapshot ->
