@@ -1,5 +1,6 @@
 package com.example.weshare.group
 
+import UserAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +15,6 @@ import com.example.weshare.R
 import com.example.weshare.main.HomeActivity
 
 class ManageUsersActivity : AppCompatActivity()  {
-    private lateinit var membersListView: ListView
     private lateinit var memberAdapter: ArrayAdapter<String>
     private val groupRepository = GroupRepository()
 
@@ -28,9 +28,12 @@ class ManageUsersActivity : AppCompatActivity()  {
 
         val addUserButton: Button = findViewById(R.id.addUserButton)
         val backButton: Button = findViewById(R.id.backButton)
+        val membersListView: ListView = findViewById(R.id.membersListView)
 
-        membersListView = findViewById(R.id.membersListView)
-        memberAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf<String>())
+        memberAdapter = UserAdapter(this, mutableListOf()) { memberEmail ->
+            removeMemberFromGroup(groupId, memberEmail)
+        }
+
         membersListView.adapter = memberAdapter
 
         loadGroupMembers(groupId)
@@ -95,5 +98,16 @@ class ManageUsersActivity : AppCompatActivity()  {
             .create()
 
         dialog.show()
+    }
+
+    private fun removeMemberFromGroup(groupId: String, memberEmail: String) {
+        groupRepository.removeMemberFromGroup(groupId, memberEmail) { success, errorMessage ->
+            if (success) {
+                Toast.makeText(this, "Member removed successfully", Toast.LENGTH_SHORT).show()
+                loadGroupMembers(groupId) // Reload the members list
+            } else {
+                Toast.makeText(this, "Error removing member: $errorMessage", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

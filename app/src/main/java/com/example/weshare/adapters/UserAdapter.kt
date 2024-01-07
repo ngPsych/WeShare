@@ -9,24 +9,28 @@ import android.widget.TextView
 import com.example.weshare.R
 import com.example.weshare.user.User
 
-class UserAdapter(context: Context, private val users: List<User>) : ArrayAdapter<User>(context, 0, users) {
-
+class UserAdapter(context: Context,
+                  private val users: List<String>,
+                  private val onRemoveClicked: (String) -> Unit)
+    : ArrayAdapter<String>(context, 0, users) {
+    interface MemberAdapterListener {
+        fun onRemoveClicked(email: String)
+    }
+    interface UserAdapterListener {
+        fun onRemoveClicked(email: String)
+    }
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_user, parent, false)
 
-        val user = getItem(position)
-        val userNameTextView = view.findViewById<TextView>(R.id.userNameTextView)
-        val userEmailTextView = view.findViewById<TextView>(R.id.userEmailTextView)
-        val removeUserButton = view.findViewById<Button>(R.id.removeUserButton)
+        val memberEmailTextView: TextView = view.findViewById(R.id.userEmailTextView)
+        val removeButton: Button = view.findViewById(R.id.removeButton)
 
-        userNameTextView.text = user?.name
-        userEmailTextView.text = user?.email
+        val memberEmail = getItem(position)
+        memberEmailTextView.text = memberEmail.toString()
 
-        removeUserButton.setOnClickListener {
-            // Implement removal logic here
-            // For example, remove the user from the list and notify the adapter
-            // users.removeAt(position)
-            // notifyDataSetChanged()
+        removeButton.setOnClickListener {
+            val memberEmail = getItem(position)
+            memberEmail?.let { it1 -> onRemoveClicked(it1) }
         }
 
         return view

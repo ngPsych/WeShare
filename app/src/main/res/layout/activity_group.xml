@@ -125,15 +125,6 @@
         android:layout_below="@id/editTextViewPhoneNumber">
 
         <Button
-            android:id="@+id/addUserButton"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="ADD USER" />
-
-
-
-        <Button
             android:id="@+id/addExpenseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
