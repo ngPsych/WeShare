@@ -1,7 +1,7 @@
 package com.example.weshare.user
 
 data class User(
-    val userId: String = "", // Default values for all properties
+    val userId: String? = null, // Default values for all properties
     val name: String = "",
     val phoneNumber: String = "",
     val email: String = ""
