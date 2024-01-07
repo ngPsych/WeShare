@@ -17,9 +17,9 @@ class GroupRepository {
             }
     }
 
-    fun getUserGroups(phoneNumber: String, onComplete: (List<Group>, String?) -> Unit) {
+    fun getUserGroups(creatorPhoneNumber: String, onComplete: (List<Group>, String?) -> Unit) {
         db.collection("groups")
-            .whereArrayContains("members", phoneNumber)
+            .whereEqualTo("creator", creatorPhoneNumber)
             .get()
             .addOnSuccessListener { result ->
                 val groups = result.mapNotNull { documentSnapshot ->
@@ -31,6 +31,7 @@ class GroupRepository {
                 onComplete(emptyList(), exception.message) // Return an empty list and the error message
             }
     }
+
 
     // Add methods to interact with group data, like getting specific groups, updating groups, etc.
 }

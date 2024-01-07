@@ -38,9 +38,6 @@ class HomeActivity : AppCompatActivity() {
         val groupListView: ListView = findViewById(R.id.groupListView)
         val currentUserPhoneNumber = authManager.getCurrentUserDetails()?.phoneNumber ?: ""
 
-        groupAdapter = GroupAdapter(this, listOf())
-        groupListView.adapter = groupAdapter
-
         if (userId.isNotEmpty()) {
             userRepository.getUser(phoneNumber) { user ->
                 user?.let {
@@ -49,7 +46,9 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
 
-            fetchUserAndGroups(currentUserPhoneNumber)
+            groupAdapter = GroupAdapter(this, mutableListOf())
+            groupListView.adapter = groupAdapter
+            fetchGroupsAndUpdateAdapter(currentUserPhoneNumber)
 
             signOutButton.setOnClickListener {
                 authManager.signOut()
@@ -99,14 +98,17 @@ class HomeActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun fetchUserAndGroups(phoneNumber: String) {
-        groupRepository.getUserGroups(phoneNumber) { groups, errorMessage ->
-            if (errorMessage != null) {
-                Toast.makeText(this, "Error fetching groups: $errorMessage", Toast.LENGTH_LONG).show()
+    private fun fetchGroupsAndUpdateAdapter(currentUserPhoneNumber: String) {
+
+        groupRepository.getUserGroups(currentUserPhoneNumber) { groups, error ->
+            if (error != null) {
+                // Handle error, maybe show a message to the user
+                print(error)
             } else {
-                groupAdapter.clear()
-                groupAdapter.addAll(groups)
-                groupAdapter.notifyDataSetChanged()
+                // Update the adapter with the fetched groups
+                runOnUiThread {
+                    groupAdapter.updateGroups(groups)
+                }
             }
         }
     }

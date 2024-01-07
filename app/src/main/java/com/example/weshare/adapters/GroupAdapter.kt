@@ -24,4 +24,10 @@ class GroupAdapter(context: Context, groups: List<Group>) :
         return view
     }
 
+    fun updateGroups(newGroups: List<Group>) {
+        clear()
+        addAll(newGroups)
+        notifyDataSetChanged()
+    }
+
 }
