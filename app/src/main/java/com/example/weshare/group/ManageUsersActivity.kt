@@ -43,12 +43,12 @@ class ManageUsersActivity : AppCompatActivity()  {
         }
 
         backButton.setOnClickListener {
-            navigateToHome()
+            navigateToGroup()
         }
     }
 
-    private fun navigateToHome() {
-        val intent = Intent(this, HomeActivity::class.java)
+    private fun navigateToGroup() {
+        val intent = Intent(this, GroupActivity::class.java)
         startActivity(intent)
     }
 
