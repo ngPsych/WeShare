@@ -73,15 +73,6 @@ class HomeActivity : AppCompatActivity() {
             navigateToLogin()
         }
 
-        groupAdapter = GroupAdapter(this, listOf())
-        groupListView.adapter = groupAdapter
-
-        if (userId.isNotEmpty()) {
-            // Fetch user and groups
-            fetchUserAndGroups(userId)
-        } else {
-            navigateToLogin()
-        }
     }
 
     private fun navigateToLogin() {
