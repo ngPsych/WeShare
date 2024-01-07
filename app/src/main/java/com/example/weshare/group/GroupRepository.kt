@@ -32,6 +32,34 @@ class GroupRepository {
             }
     }
 
+    fun createGroup(group: Group, onComplete: (Boolean, String?) -> Unit) {
+        db.collection("groups").add(group)
+            .addOnSuccessListener {
+                // Group created successfully
+                onComplete(true, null)
+            }
+            .addOnFailureListener { exception ->
+                // Error in creating group
+                onComplete(false, exception.message)
+            }
+    }
 
-    // Add methods to interact with group data, like getting specific groups, updating groups, etc.
+    fun addMemberToGroup(groupId: String, newMemberEmail: String, onComplete: (Boolean, String?) -> Unit) {
+        val groupRef = db.collection("groups").document(groupId)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(groupRef)
+            val group = snapshot.toObject(Group::class.java)
+            val currentMembers = group?.members ?: listOf()
+
+            if (newMemberEmail !in currentMembers) {
+                val updatedMembers = currentMembers + newMemberEmail
+                transaction.update(groupRef, "members", updatedMembers)
+            }
+        }.addOnSuccessListener {
+            onComplete(true, null) // Member added successfully
+        }.addOnFailureListener { exception ->
+            onComplete(false, exception.message) // Error in adding member
+        }
+    }
 }
