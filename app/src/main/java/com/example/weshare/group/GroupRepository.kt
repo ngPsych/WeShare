@@ -62,4 +62,25 @@ class GroupRepository {
             onComplete(false, exception.message) // Error in adding member
         }
     }
+
+    fun getCurrentGroupDetails(groupName: String, groupDescription: String, onComplete: (Group?, String?) -> Unit) {
+        db.collection("groups")
+            .whereEqualTo("name", groupName)
+            .whereEqualTo("description", groupDescription)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val document = documents.first() // Get the first (and only) document
+                    val group = document.toObject(Group::class.java)
+                    val groupId = document.id // This is the document ID
+                    onComplete(group, groupId) // Pass the Group object and its ID
+                } else {
+                    onComplete(null, null) // No group found with the given name and description
+                }
+            }
+            .addOnFailureListener {
+                onComplete(null, null) // Error occurred during fetching
+            }
+    }
 }
