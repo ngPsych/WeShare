@@ -7,10 +7,15 @@ import com.example.weshare.user.UserRepository
 import com.google.firebase.Firebase
 import com.google.firebase.functions.functions
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class NotificationRepository {
 
+    /*
     private val userRepository = UserRepository()
     private val functions = Firebase.functions
     private val groupRepository = GroupRepository()
@@ -74,4 +79,6 @@ class NotificationRepository {
         functions.getHttpsCallable("sendNotification").call(data) // Default name from firebase function.
     }
 
+
+     */
 }

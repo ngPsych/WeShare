@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -16,10 +17,18 @@ import androidx.core.view.children
 import com.example.weshare.R
 import com.example.weshare.expense.ExpenseRepository
 import com.example.weshare.main.HomeActivity
+import com.example.weshare.notifications.FirebaseMessagingService
+import com.example.weshare.notifications.Notification
 import com.example.weshare.notifications.NotificationRepository
+import com.example.weshare.notifications.PushNotification
+import com.example.weshare.notifications.RetrofitInstance
 import com.example.weshare.user.AuthManager
 import com.example.weshare.user.UserRepository
-
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class GroupActivity : AppCompatActivity() {
 
@@ -32,6 +41,10 @@ class GroupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group)
+
+        FirebaseMessagingService.sharedPref = getSharedPreferences("sharedPref", MODE_PRIVATE)
+
+        //FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
 
         val groupName = intent.getStringExtra("GROUP_NAME") ?: "Group Name"
         val groupDescription = intent.getStringExtra("GROUP_DESCRIPTION") ?: "Description"
@@ -99,8 +112,6 @@ class GroupActivity : AppCompatActivity() {
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
 
     private fun showAddExpenseDialog(groupId: String, groupName: String, groupDescription: String) {
@@ -141,8 +152,34 @@ class GroupActivity : AppCompatActivity() {
                                     val email = it.email
                                     expenseRepository.createExpense(groupId, description, amount, email, debts)
 
-                                    val debtsList: List<String> = debts.keys.map { it -> it }
-                                    notificationRepository.notifyDebtListMembers(groupId, debtsList, "WeShare", "New expenses added")
+                                    val debtList: List<String> = debts.keys.map { it -> it }
+                                    //notificationRepository.notifyDebtListMembers(groupId, debtsList, "WeShare", "New expenses added")
+
+                                    groupRepository.getGroupMembers(groupId) { members, error ->
+                                        if (error != null) {
+                                            // Handle error
+                                            return@getGroupMembers
+                                        }
+                                        val membersToNotify = members?.filter { it in debtList } ?: listOf()
+
+                                        // Step 2: Fetch user details for each member in the debt list
+                                        membersToNotify.forEach { memberEmail ->
+                                            userRepository.getUserByEmail(memberEmail) { user, _ ->
+                                                user?.let {
+                                                    // Step 3: Send notification using FCM token
+                                                    it.fcmToken?.let { it1 ->
+                                                        PushNotification(
+                                                            Notification("WeShare", "New expenses from the group: $groupName"),
+                                                            it1
+                                                        ).also {
+                                                            sendNotification(it)
+                                                        } }
+                                                }
+                                            }
+                                        }
+                                    }
+
+
 
                                 }
                             }
@@ -216,5 +253,19 @@ class GroupActivity : AppCompatActivity() {
         }
     }
 
+    private val TAG = "GroupActivity"
+
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if (response.isSuccessful) {
+                Log.d(TAG, "Response: ${Gson().toJson(response)}")
+            } else {
+                Log.e(TAG, response.errorBody().toString())
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, e.toString())
+        }
+    }
 
 }
