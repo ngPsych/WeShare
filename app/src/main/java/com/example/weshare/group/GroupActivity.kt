@@ -261,10 +261,11 @@ class GroupActivity : AppCompatActivity() {
             if (response.isSuccessful) {
                 Log.d(TAG, "Response: ${Gson().toJson(response)}")
             } else {
-                Log.e(TAG, response.errorBody().toString())
+                val errorString = response.errorBody()?.string()
+                Log.e(TAG, "Error: $errorString")
             }
         } catch (e: Exception) {
-            Log.e(TAG, e.toString())
+            Log.e(TAG, "Exception while sending notification", e)
         }
     }
 
