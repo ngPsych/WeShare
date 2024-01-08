@@ -29,7 +29,6 @@ class ExpenseRepository {
             }
     }
 
-
     fun calculateMemberTotalDebtInGroup(memberEmail: String, groupId: String, onComplete: (Boolean, Double) -> Unit) {
 
         // Step 1: Retrieve expenses for the given groupId
@@ -53,6 +52,39 @@ class ExpenseRepository {
                         } else {
                             onComplete(false, 0.0) // Group not found
                         }
+                    }
+                    .addOnFailureListener {
+                        onComplete(false, 0.0) // Error in fetching group
+                    }
+            }
+            .addOnFailureListener {
+                onComplete(false, 0.0) // Error in fetching expenses
+            }
+    }
+
+    fun calculateTotalOwedToCreator(creatorName: String, groupId: String, onComplete: (Boolean, Double) -> Unit) {
+
+        // Step 1: Retrieve expenses for the given groupId created by the creator
+        db.collection("expenses")
+            .whereEqualTo("groupId", groupId)
+            .whereEqualTo("creator", creatorName)
+            .get()
+            .addOnSuccessListener { expenses ->
+                var totalOwed = 0.0
+
+                // Calculate the sum of all debts owed to the creator
+                expenses.forEach { expense ->
+                    val debts = expense.data["debts"] as Map<String, Double>
+                    debts.filterKeys { it != creatorName }.forEach { (_, amount) ->
+                        totalOwed += amount
+                    }
+                }
+
+                // Step 2: Verify the creator is part of the group
+                db.collection("groups").document(groupId).get()
+                    .addOnSuccessListener { document ->
+                        val isCreatorInGroup = document.exists() && creatorName in (document.toObject(Group::class.java)?.members ?: listOf())
+                        onComplete(isCreatorInGroup, totalOwed)
                     }
                     .addOnFailureListener {
                         onComplete(false, 0.0) // Error in fetching group

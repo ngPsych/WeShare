@@ -44,6 +44,7 @@ class GroupActivity : AppCompatActivity() {
         descriptionTextView.text = groupDescription
 
         getDebt(groupName, groupDescription)
+        getOwed(groupName, groupDescription)
 
         userRepository.getUserByEmail(authManager.getCurrentUserDetails()?.email.toString()) { user, _ ->
             user?.let {
@@ -58,26 +59,13 @@ class GroupActivity : AppCompatActivity() {
             groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
                 if (group != null && groupId != null) {
                     showAddExpenseDialog(groupId, groupName, groupDescription)
-
-                    userRepository.getUserByEmail(authManager.getCurrentUserDetails()?.email.toString()) { user, _ ->
-                        user?.let {
-                            val email = it.email
-
-                            expenseRepository.calculateMemberTotalDebtInGroup(email, groupId) { isInGroup, totalDebt ->
-                                if (isInGroup) {
-                                    val debtTextView: TextView = findViewById(R.id.debtTextView)
-                                    debtTextView.text = totalDebt.toString()
-                                } else {
-                                    Toast.makeText(this, "Member not found in the group or an error occurred", Toast.LENGTH_LONG).show()
-                                }
-                            }
-
-                        }
-                    }
                 } else {
                     Toast.makeText(this, "Error: Group not found.", Toast.LENGTH_SHORT).show()
                 }
             }
+
+            getDebt(groupName, groupDescription)
+            getOwed(groupName, groupDescription)
         }
 
         manageUsersButton.setOnClickListener {
@@ -168,6 +156,31 @@ class GroupActivity : AppCompatActivity() {
             } else {
                 // Handle error or group not found scenario
                 Toast.makeText(this, error ?: "Error fetching group members", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun getOwed(groupName: String, groupDescription: String) {
+        groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
+            if (group != null && groupId != null) {
+
+                userRepository.getUserByEmail(authManager.getCurrentUserDetails()?.email.toString()) { user, _ ->
+                    user?.let {
+                        val email = it.email
+
+                        expenseRepository.calculateTotalOwedToCreator(email, groupId) { isInGroup, totalOwed ->
+                            if (isInGroup) {
+                                val receiveTextView: TextView = findViewById(R.id.receiveTextView)
+                                receiveTextView.text = totalOwed.toString()
+                            } else {
+                                Toast.makeText(this, "Member not found in the group or an error occurred", Toast.LENGTH_LONG).show()
+                            }
+                        }
+
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Error: Group not found.", Toast.LENGTH_SHORT).show()
             }
         }
     }
