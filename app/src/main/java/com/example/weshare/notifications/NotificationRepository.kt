@@ -15,7 +15,7 @@ import org.json.JSONObject
 
 class NotificationRepository {
 
-    /*
+
     private val userRepository = UserRepository()
     private val functions = Firebase.functions
     private val groupRepository = GroupRepository()
@@ -47,6 +47,7 @@ class NotificationRepository {
         }
 
     }
+    /*
 
     fun notifyDebtListMembers(groupId: String, debtList: List<String>, title: String, message: String) {
         // Step 1: Retrieve group members
