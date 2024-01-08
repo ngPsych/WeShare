@@ -52,6 +52,7 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         val notificationID = Random.nextInt()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d("TEST", "FirebaseMessagingService")
             createNotificationChannel(notificationManager)
         }
 
