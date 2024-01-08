@@ -169,7 +169,9 @@ class GroupActivity : AppCompatActivity() {
                                                     // Step 3: Send notification using FCM token
                                                     it.fcmToken?.let { it1 ->
                                                         PushNotification(
-                                                            Notification("WeShare", "New expenses from the group: $groupName"),
+                                                            //Notification("WeShare", "New expenses from the group: $groupName"),
+                                                            "WeShare",
+                                                            "New expenses from the group: $groupName",
                                                             it1
                                                         ).also {
                                                             sendNotification(it)
@@ -257,6 +259,7 @@ class GroupActivity : AppCompatActivity() {
 
     private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
         try {
+            Log.d(TAG, "Sending notification: ${Gson().toJson(notification)}")
             val response = RetrofitInstance.api.postNotification(notification)
             if (response.isSuccessful) {
                 Log.d(TAG, "Response: ${Gson().toJson(response)}")
