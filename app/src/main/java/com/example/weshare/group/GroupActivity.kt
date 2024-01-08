@@ -56,6 +56,22 @@ class GroupActivity : AppCompatActivity() {
             groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
                 if (group != null && groupId != null) {
                     showAddExpenseDialog(groupId, groupName, groupDescription)
+
+                    userRepository.getUserByEmail(authManager.getCurrentUserDetails()?.email.toString()) { user, _ ->
+                        user?.let {
+                            val email = it.email
+
+                            expenseRepository.calculateMemberTotalDebtInGroup(email, groupId) { isInGroup, totalDebt ->
+                                if (isInGroup) {
+                                    val debtTextView: TextView = findViewById(R.id.debtTextView)
+                                    debtTextView.text = totalDebt.toString()
+                                } else {
+                                    Toast.makeText(this, "Member not found in the group or an error occurred", Toast.LENGTH_LONG).show()
+                                }
+                            }
+
+                        }
+                    }
                 } else {
                     Toast.makeText(this, "Error: Group not found.", Toast.LENGTH_SHORT).show()
                 }
@@ -128,7 +144,13 @@ class GroupActivity : AppCompatActivity() {
                     //createOrUpdateExpense(description, amount, debts)
                     groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
                         if (group != null && groupId != null) {
-                            expenseRepository.createExpense(groupId, description, amount, debts)
+                            userRepository.getUserByEmail(authManager.getCurrentUserDetails()?.email.toString()) { user, _ ->
+                                user?.let {
+                                    val email = it.email
+                                    expenseRepository.createExpense(groupId, description, amount, email, debts)
+                                }
+                            }
+
                         } else {
                             // Handle the case where no group is found or there's an error
                             Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
