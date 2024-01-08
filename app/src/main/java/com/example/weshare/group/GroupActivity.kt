@@ -16,6 +16,7 @@ import androidx.core.view.children
 import com.example.weshare.R
 import com.example.weshare.expense.ExpenseRepository
 import com.example.weshare.main.HomeActivity
+import com.example.weshare.notifications.NotificationRepository
 import com.example.weshare.user.AuthManager
 import com.example.weshare.user.UserRepository
 
@@ -26,6 +27,7 @@ class GroupActivity : AppCompatActivity() {
     private val userRepository = UserRepository()
     private val groupRepository = GroupRepository()
     private val expenseRepository = ExpenseRepository()
+    private val notificationRepository = NotificationRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -138,6 +140,10 @@ class GroupActivity : AppCompatActivity() {
                                 user?.let {
                                     val email = it.email
                                     expenseRepository.createExpense(groupId, description, amount, email, debts)
+
+                                    val debtsList: List<String> = debts.keys.map { it -> it }
+                                    notificationRepository.notifyDebtListMembers(groupId, debtsList, "WeShare", "New expenses added")
+
                                 }
                             }
 
