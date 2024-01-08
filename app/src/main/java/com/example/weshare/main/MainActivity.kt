@@ -8,12 +8,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weshare.R
+import com.example.weshare.notifications.NotificationRepository
 import com.example.weshare.user.AuthManager
 import com.example.weshare.user.SignUpActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var authManager: AuthManager
+    private lateinit var notificationRepository: NotificationRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,8 @@ class MainActivity : AppCompatActivity() {
                 if (isSuccessful) {
                     //Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
                     // Proceed to next activity or operation after login
+
+                    notificationRepository.saveFCMToken(authManager.getCurrentUserDetails()?.email.toString())
                     navigateToHome()
                 } else {
                     Toast.makeText(this, "Login failed: $errorMessage", Toast.LENGTH_SHORT).show()
@@ -60,4 +64,5 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
 }

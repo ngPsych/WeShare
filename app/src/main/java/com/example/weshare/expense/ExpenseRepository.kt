@@ -95,29 +95,4 @@ class ExpenseRepository {
             }
     }
 
-
-    fun calculateDebts(memberIds: List<String>, totalAmount: Double): Map<String, Double> {
-        val debts = mutableMapOf<String, Double>()
-        val individualAmount = totalAmount / memberIds.size
-        memberIds.forEach { memberId ->
-            debts[memberId] = individualAmount // Adjust this logic as needed
-        }
-        return debts
-    }
-
-    fun loadExpenses(groupId: String) {
-        val db = FirebaseFirestore.getInstance()
-        db.collection("expenses").whereEqualTo("groupId", groupId)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    for (document in task.result!!) {
-                        Log.d("Expense", "${document.id} => ${document.data}")
-                        // Process and display the data in your app
-                    }
-                } else {
-                    Log.w("Expense", "Error getting documents.", task.exception)
-                }
-            }
-    }
 }
