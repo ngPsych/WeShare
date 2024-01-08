@@ -5,5 +5,5 @@ data class User(
     val name: String = "",
     val phoneNumber: String = "",
     val email: String = "",
-    val fcmToken: String? = "" // Add this field for the FCM token
+    val fcmToken: String? = ""
 )

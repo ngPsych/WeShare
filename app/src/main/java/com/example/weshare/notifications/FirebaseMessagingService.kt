@@ -1,21 +1,17 @@
 package com.example.weshare.notifications
 
-import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.NotificationManager.IMPORTANCE_DEFAULT
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.graphics.Color
 import androidx.core.app.NotificationCompat
 import com.example.weshare.R
 import com.example.weshare.main.MainActivity
@@ -81,49 +77,4 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         }
         notificationManager.createNotificationChannel(channel)
     }
-
-    /*
-    override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // Check if message contains a data payload.
-        if (remoteMessage.data.isNotEmpty()) {
-            handleDataMessage(remoteMessage.data)
-        }
-
-        // Check if message contains a notification payload.
-        remoteMessage.notification?.let {
-            showNotification(it.title, it.body)
-        }
-    }
-
-    private fun handleDataMessage(data: Map<String, String>) {
-        // Example: Extracting data from the message
-        val title = data["title"] ?: "Default Title"
-        val message = data["message"] ?: "Default Message"
-
-        // Act on the data - you can update UI, store data, etc.
-        // For example, let's log the extracted data
-        Log.d("FCMData", "Title: $title, Message: $message")
-    }
-
-    private fun showNotification(title: String?, message: String?) {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        // Create a Notification Channel (needed for Android 8.0 and above)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel("MyChannelId", "MyChannel", NotificationManager.IMPORTANCE_DEFAULT)
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        // Building the notification
-        val notificationBuilder = NotificationCompat.Builder(this, "MyChannelId")
-            .setContentTitle(title)
-            .setContentText(message)
-            .setSmallIcon(R.drawable.ic_notification) // replace with your app's icon
-            .setAutoCancel(true)
-
-        // Show the notification
-        notificationManager.notify(0, notificationBuilder.build())
-    }
-
-     */
 }

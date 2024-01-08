@@ -30,13 +30,11 @@ class SignUpActivity : AppCompatActivity() {
             val phoneNumber = editTextPhoneNumber.text.toString()
             val email = editTextEmail.text.toString()
 
-            // Input validation (simplified for this example)
             if (name.isEmpty() || password.isEmpty() || phoneNumber.isEmpty() || email.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            // Proceed with Firebase registration
             authManager.registerUser(email, password) { isSuccessful, errorMessage ->
                 if (isSuccessful) {
                     val newUser = User(
@@ -48,7 +46,6 @@ class SignUpActivity : AppCompatActivity() {
                     userRepository.createUser(newUser) { profileCreationSuccess, _ ->
                         if (profileCreationSuccess) {
                             Toast.makeText(this, "Account created!", Toast.LENGTH_LONG).show()
-                            // Use the userId as needed here
                             val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                         } else {

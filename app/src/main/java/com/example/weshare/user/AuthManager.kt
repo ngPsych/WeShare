@@ -1,6 +1,5 @@
 package com.example.weshare.user
 
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
@@ -8,7 +7,6 @@ import com.google.firebase.auth.FirebaseUser
 class AuthManager {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    // Register a new user with email and password
     fun registerUser(email: String, password: String, onComplete: (Boolean, String?) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -20,7 +18,6 @@ class AuthManager {
             }
     }
 
-    // Log in a user with email and password
     fun loginUser(email: String, password: String, onComplete: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -32,10 +29,8 @@ class AuthManager {
             }
     }
 
-    // Get the current authenticated user
     fun getCurrentUser(): FirebaseUser? = auth.currentUser
 
-    // Retrieve current user's details
     fun getCurrentUserDetails(): User? {
         val firebaseUser = auth.currentUser
         return firebaseUser?.let { user ->
@@ -48,7 +43,6 @@ class AuthManager {
         }
     }
 
-    // Update the password for the current user
     fun updatePassword(newPassword: String, onComplete: (Boolean, String?) -> Unit) {
         val currentUser = auth.currentUser
 
@@ -56,20 +50,16 @@ class AuthManager {
             currentUser.updatePassword(newPassword)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // Password update is successful
                         onComplete(true, null)
                     } else {
-                        // Password update failed
                         onComplete(false, task.exception?.message)
                     }
                 }
         } else {
-            // User is not logged in or the user object is null
             onComplete(false, "User not logged in")
         }
     }
 
-    // Delete the current user
     fun deleteUser(onComplete: (Boolean, String?) -> Unit) {
         val currentUser = auth.currentUser
         if (currentUser != null) {
@@ -86,7 +76,6 @@ class AuthManager {
         }
     }
 
-    // Sign out the current user
     fun signOut() {
         auth.signOut()
     }

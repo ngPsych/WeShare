@@ -42,7 +42,7 @@ class ProfileActivity : AppCompatActivity() {
                         "$userId, ${user.name}, ${user.phoneNumber}, ${user.email}", Toast.LENGTH_SHORT).show()
 
                     profileUpdateButton.setOnClickListener {
-                        var newPhoneNumber = user.phoneNumber // default to the current phone number
+                        var newPhoneNumber = user.phoneNumber
 
                         if (profilePhoneNumber.text.isNotEmpty()) {
                             newPhoneNumber = profilePhoneNumber.text.toString()
@@ -59,14 +59,12 @@ class ProfileActivity : AppCompatActivity() {
                             Toast.makeText(this, "PASSWORD IS EMPTY OR DOES NOT MATCH", Toast.LENGTH_SHORT).show()
                         }
 
-                        // Create an updated user object
                         val updatedUser = User(
                             name = user.name,
                             phoneNumber = newPhoneNumber,
                             email = user.email
                         )
 
-                        // Call updateUser to update the user's information in Firestore
                         userRepository.updateUser(userId.toString(), updatedUser) { isSuccess ->
                             if (isSuccess) {
                                 Toast.makeText(
@@ -97,16 +95,13 @@ class ProfileActivity : AppCompatActivity() {
         finish()
     }
 
-    // Add methods to update user profile, handle inputs, etc
     private fun updatePassword(newPassword: String) {
         if (newPassword.isNotEmpty()) {
             authManager.updatePassword(newPassword) { isSuccess, errorMessage ->
                 if (isSuccess) {
                     //Toast.makeText(this, "Password updated successfully", Toast.LENGTH_SHORT).show()
-                    // Handle successful password update (e.g., navigate back to the previous screen)
                 } else {
                     //Toast.makeText(this, "Failed to update password: $errorMessage", Toast.LENGTH_LONG).show()
-                    // Handle failure (e.g., show error message to the user)
                 }
             }
         } else {

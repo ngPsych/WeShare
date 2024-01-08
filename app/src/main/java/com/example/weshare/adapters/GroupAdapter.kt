@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.weshare.R
-import com.example.weshare.databinding.ItemGroupBinding
 import com.example.weshare.group.Group
 
 class GroupAdapter(context: Context, groups: List<Group>) :

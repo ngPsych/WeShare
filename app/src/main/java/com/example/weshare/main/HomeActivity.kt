@@ -47,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
 
             userRepository.getUserByEmail(email) { user, _ ->
                 user?.let {
-                    val email = it.email // Extracting phone number
+                    val email = it.email
 
                     groupAdapter = GroupAdapter(this, mutableListOf())
                     groupListView.adapter = groupAdapter
@@ -107,10 +107,8 @@ class HomeActivity : AppCompatActivity() {
 
         groupRepository.getUserGroups(currentUserEmail) { groups, error ->
             if (error != null) {
-                // Handle error, maybe show a message to the user
                 print(error)
             } else {
-                // Update the adapter with the fetched groups
                 runOnUiThread {
                     groupAdapter.updateGroups(groups)
                 }

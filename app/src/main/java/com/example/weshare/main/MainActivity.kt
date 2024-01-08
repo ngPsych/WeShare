@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weshare.R
@@ -21,10 +20,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            RequestNotificationPermissionDialog()
-        }
 
         authManager = AuthManager()
         notificationRepository = NotificationRepository()
@@ -45,8 +40,6 @@ class MainActivity : AppCompatActivity() {
 
             authManager.loginUser(email, password) { isSuccessful, errorMessage ->
                 if (isSuccessful) {
-                    //Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
-                    // Proceed to next activity or operation after login
 
                     notificationRepository.saveFCMToken(authManager.getCurrentUserDetails()?.email.toString())
                     navigateToHome()
@@ -57,12 +50,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         signupButton.setOnClickListener {
-            // Navigate to SignUpActivity
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
 
-        // Initialize other components like userAdapter if needed
     }
 
     private fun navigateToHome() {

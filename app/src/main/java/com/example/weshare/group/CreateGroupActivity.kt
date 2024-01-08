@@ -29,16 +29,14 @@ class CreateGroupActivity : AppCompatActivity() {
                 name = editTextGroupName.text.toString(),
                 description = editTextDescription.text.toString(),
                 creator = creatorEmail,
-                members = listOf(creatorEmail) // Adding the creator's email to the members list
+                members = listOf(creatorEmail)
             )
 
             groupRepository.createGroup(newGroup) { success, errorMessage ->
                 if (success) {
-                    // Handle successful group creation
                     Toast.makeText(this, "Group created successfully", Toast.LENGTH_SHORT).show()
                     navigateToHome()
                 } else {
-                    // Handle error
                     Toast.makeText(this, "Error creating group: $errorMessage", Toast.LENGTH_SHORT).show()
                 }
             }

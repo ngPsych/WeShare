@@ -4,10 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import com.example.weshare.R
-import com.example.weshare.user.User
 
 class UserAdapter(context: Context,
                   private val users: List<String>,

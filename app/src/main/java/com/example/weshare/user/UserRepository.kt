@@ -24,12 +24,12 @@ class UserRepository {
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    val document = documents.first() // Get the first (and only) document
+                    val document = documents.first()
                     val user = document.toObject(User::class.java)
-                    val userId = document.id // This is the document ID
-                    onComplete(user, userId) // Pass the user object and userId (document ID)
+                    val userId = document.id
+                    onComplete(user, userId)
                 } else {
-                    onComplete(null, null) // No user found
+                    onComplete(null, null)
                 }
             }
             .addOnFailureListener {
@@ -41,8 +41,7 @@ class UserRepository {
     fun createUser(user: User, onComplete: (Boolean, String?) -> Unit) {
         db.collection("users").add(user)
             .addOnSuccessListener { documentReference ->
-                val generatedUserId = documentReference.id // Firestore-generated ID
-                // The generatedUserId can be used if needed, otherwise, it's just confirmation of successful creation
+                val generatedUserId = documentReference.id
                 onComplete(true, generatedUserId)
             }
             .addOnFailureListener {

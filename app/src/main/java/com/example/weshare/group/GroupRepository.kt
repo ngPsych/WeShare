@@ -6,17 +6,6 @@ class GroupRepository {
 
     private val db = FirebaseFirestore.getInstance()
 
-    fun getAllGroups(onComplete: (List<Group>) -> Unit) {
-        db.collection("groups").get()
-            .addOnSuccessListener { result ->
-                val groups = result.mapNotNull { it.toObject(Group::class.java) }
-                onComplete(groups)
-            }
-            .addOnFailureListener {
-                onComplete(emptyList())
-            }
-    }
-
     fun getUserGroups(userEmail: String, onComplete: (List<Group>, String?) -> Unit) {
         db.collection("groups")
             .whereArrayContains("members", userEmail)
@@ -25,21 +14,19 @@ class GroupRepository {
                 val groups = result.mapNotNull { documentSnapshot ->
                     documentSnapshot.toObject(Group::class.java)
                 }
-                onComplete(groups, null) // Return the list of groups the user is a member of
+                onComplete(groups, null)
             }
             .addOnFailureListener { exception ->
-                onComplete(emptyList(), exception.message) // Return an empty list and the error message
+                onComplete(emptyList(), exception.message)
             }
     }
 
     fun createGroup(group: Group, onComplete: (Boolean, String?) -> Unit) {
         db.collection("groups").add(group)
             .addOnSuccessListener {
-                // Group created successfully
                 onComplete(true, null)
             }
             .addOnFailureListener { exception ->
-                // Error in creating group
                 onComplete(false, exception.message)
             }
     }
@@ -63,16 +50,16 @@ class GroupRepository {
                             transaction.update(groupRef, "members", updatedMembers)
                         }
                     }.addOnSuccessListener {
-                        onComplete(true, null) // Member added successfully
+                        onComplete(true, null)
                     }.addOnFailureListener { exception ->
-                        onComplete(false, exception.message) // Error in adding member
+                        onComplete(false, exception.message)
                     }
                 } else {
-                    onComplete(false, "User not found") // User does not exist
+                    onComplete(false, "User not found")
                 }
             }
             .addOnFailureListener { exception ->
-                onComplete(false, exception.message) // Error checking user existence
+                onComplete(false, exception.message)
             }
     }
 
@@ -84,16 +71,16 @@ class GroupRepository {
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    val document = documents.first() // Get the first (and only) document
+                    val document = documents.first()
                     val group = document.toObject(Group::class.java)
-                    val groupId = document.id // This is the document ID
-                    onComplete(group, groupId) // Pass the Group object and its ID
+                    val groupId = document.id
+                    onComplete(group, groupId)
                 } else {
-                    onComplete(null, null) // No group found with the given name and description
+                    onComplete(null, null)
                 }
             }
             .addOnFailureListener {
-                onComplete(null, null) // Error occurred during fetching
+                onComplete(null, null)
             }
     }
 
@@ -105,13 +92,13 @@ class GroupRepository {
                 if (document.exists()) {
                     val group = document.toObject(Group::class.java)
                     val members = group?.members ?: listOf()
-                    onComplete(members, null) // Return the list of members
+                    onComplete(members, null)
                 } else {
                     onComplete(null, "Group not found")
                 }
             }
             .addOnFailureListener { exception ->
-                onComplete(null, exception.message) // Error occurred during fetching
+                onComplete(null, exception.message)
             }
     }
 
@@ -126,12 +113,12 @@ class GroupRepository {
             if (memberEmail in currentMembers) {
                 currentMembers.remove(memberEmail)
                 transaction.update(groupRef, "members", currentMembers)
-                onComplete(true, null) // Member removed successfully
+                onComplete(true, null)
             } else {
-                onComplete(false, "Member not found in group") // Member not in group
+                onComplete(false, "Member not found in group")
             }
         }.addOnFailureListener { exception ->
-            onComplete(false, exception.message) // Error in removing member
+            onComplete(false, exception.message)
         }
     }
 

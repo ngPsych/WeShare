@@ -36,7 +36,6 @@ class GroupActivity : AppCompatActivity() {
     private val userRepository = UserRepository()
     private val groupRepository = GroupRepository()
     private val expenseRepository = ExpenseRepository()
-    private val notificationRepository = NotificationRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +105,6 @@ class GroupActivity : AppCompatActivity() {
                 }
                 startActivity(intent)
             } else {
-                // Handle the case where no group is found or there's an error
                 Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
             }
         }
@@ -124,7 +122,6 @@ class GroupActivity : AppCompatActivity() {
                 val expenseAmount = dialogView.findViewById<EditText>(R.id.expenseAmount)
                 val membersContainer = dialogView.findViewById<LinearLayout>(R.id.membersContainer)
 
-                // Dynamically add views for each member
                 members.forEach { memberName ->
                     val memberDebt = EditText(this)
                     memberDebt.hint = "$memberName's debt"
@@ -141,8 +138,6 @@ class GroupActivity : AppCompatActivity() {
                         debts[members[index]] = debtAmount
                     }
 
-                    // Call your method to create or update the expense
-                    //createOrUpdateExpense(description, amount, debts)
                     groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
                         if (group != null && groupId != null) {
                             userRepository.getUserByEmail(authManager.getCurrentUserDetails()?.email.toString()) { user, _ ->
@@ -151,20 +146,16 @@ class GroupActivity : AppCompatActivity() {
                                     expenseRepository.createExpense(groupId, description, amount, email, debts)
 
                                     val debtList: List<String> = debts.keys.map { it -> it }
-                                    //notificationRepository.notifyDebtListMembers(groupId, debtsList, "WeShare", "New expenses added")
 
                                     groupRepository.getGroupMembers(groupId) { members, error ->
                                         if (error != null) {
-                                            // Handle error
                                             return@getGroupMembers
                                         }
                                         val membersToNotify = members?.filter { it in debtList } ?: listOf()
 
-                                        // Step 2: Fetch user details for each member in the debt list
                                         membersToNotify.forEach { memberEmail ->
                                             userRepository.getUserByEmail(memberEmail) { user, _ ->
                                                 user?.let {
-                                                    // Step 3: Send notification using FCM token
                                                     it.fcmToken?.let { it1 ->
                                                         PushNotification(
                                                             Notification("WeShare", "New expenses from the group: $groupName"),
@@ -183,7 +174,6 @@ class GroupActivity : AppCompatActivity() {
                             }
 
                         } else {
-                            // Handle the case where no group is found or there's an error
                             Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -195,7 +185,6 @@ class GroupActivity : AppCompatActivity() {
                 val dialog = builder.create()
                 dialog.show()
             } else {
-                // Handle error or group not found scenario
                 Toast.makeText(this, error ?: "Error fetching group members", Toast.LENGTH_SHORT).show()
             }
         }

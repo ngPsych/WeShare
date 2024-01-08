@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weshare.R
-import com.example.weshare.main.HomeActivity
 
 class ManageUsersActivity : AppCompatActivity()  {
     private lateinit var memberAdapter: ArrayAdapter<String>
@@ -79,7 +78,6 @@ class ManageUsersActivity : AppCompatActivity()  {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_user, null)
         val editTextEmailAddress: EditText = dialogView.findViewById(R.id.editTextEmailAddress)
 
-        // Create the AlertDialog
         val dialog = AlertDialog.Builder(this)
             .setTitle("Add User")
             .setView(dialogView)
@@ -90,14 +88,12 @@ class ManageUsersActivity : AppCompatActivity()  {
                     if (group != null) {
                         addMemberToGroup(groupId.toString(), email)
                     } else {
-                        // Handle the case where no group is found or there's an error
                         Toast.makeText(this, "Group not found or error occurred", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
             .setNegativeButton("Cancel", null)
             .create()
-
         dialog.show()
     }
 
@@ -106,7 +102,7 @@ class ManageUsersActivity : AppCompatActivity()  {
             runOnUiThread {
                 if (success) {
                     Toast.makeText(this, "Member removed successfully", Toast.LENGTH_SHORT).show()
-                    loadGroupMembers(groupId) // Reload the members list
+                    loadGroupMembers(groupId)
                 } else {
                     Toast.makeText(this, "Error removing member: $errorMessage", Toast.LENGTH_SHORT).show()
                 }
