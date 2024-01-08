@@ -6,7 +6,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 
 class NotificationRepository {
 
-    private lateinit var userRepository: UserRepository
+    private val userRepository = UserRepository()
 
     fun saveFCMToken(email: String) {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
