@@ -11,7 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Group Name"
-        android:textSize="20dp"/>
+        android:textSize="20dp"
+        android:layout_margin="10dp"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/descriptionTextView"
@@ -19,7 +21,9 @@
         android:layout_height="wrap_content"
         android:text="Group Description"
         android:textSize="16dp"
-        android:layout_below="@+id/groupNameTextView"/>
+        android:layout_below="@+id/groupNameTextView"
+        android:layout_margin="15dp"
+        android:paddingBottom="15dp"/>
 
     <LinearLayout
         android:id="@+id/expenseLayout"
@@ -103,26 +107,11 @@
     </LinearLayout>
 
 
-    <EditText
-        android:id="@+id/editTextViewPhoneNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:hint="Phone Number"
-        android:inputType="text"
-        android:padding="16dp"
-        tools:layout_editor_absoluteX="-25dp"
-        tools:layout_editor_absoluteY="571dp"
-        android:layout_below="@id/expenseLayout"/>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/editTextViewPhoneNumber">
+        android:layout_below="@id/expenseLayout">
 
         <Button
             android:id="@+id/addExpenseButton"
