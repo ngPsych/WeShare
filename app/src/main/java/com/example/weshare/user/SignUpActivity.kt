@@ -45,7 +45,7 @@ class SignUpActivity : AppCompatActivity() {
                         email = email
                     )
 
-                    userRepository.createUser(newUser) { profileCreationSuccess, userId ->
+                    userRepository.createUser(newUser) { profileCreationSuccess, _ ->
                         if (profileCreationSuccess) {
                             Toast.makeText(this, "Account created!", Toast.LENGTH_LONG).show()
                             // Use the userId as needed here
