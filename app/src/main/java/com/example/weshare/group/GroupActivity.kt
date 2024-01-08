@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import com.example.weshare.R
+import com.example.weshare.expense.ExpenseRepository
 import com.example.weshare.main.HomeActivity
 import com.example.weshare.user.AuthManager
 import com.example.weshare.user.UserRepository
@@ -24,6 +25,7 @@ class GroupActivity : AppCompatActivity() {
     private val authManager = AuthManager()
     private val userRepository = UserRepository()
     private val groupRepository = GroupRepository()
+    private val expenseRepository = ExpenseRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +55,7 @@ class GroupActivity : AppCompatActivity() {
         addExpenseButton.setOnClickListener {
             groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
                 if (group != null && groupId != null) {
-                    showAddExpenseDialog(groupId)
+                    showAddExpenseDialog(groupId, groupName, groupDescription)
                 } else {
                     Toast.makeText(this, "Error: Group not found.", Toast.LENGTH_SHORT).show()
                 }
@@ -93,7 +95,7 @@ class GroupActivity : AppCompatActivity() {
 
     }
 
-    private fun showAddExpenseDialog(groupId: String) {
+    private fun showAddExpenseDialog(groupId: String, groupName: String, groupDescription: String) {
         groupRepository.getGroupMembers(groupId) { members, error ->
             if (members != null && error == null) {
                 val builder = AlertDialog.Builder(this)
@@ -124,6 +126,14 @@ class GroupActivity : AppCompatActivity() {
 
                     // Call your method to create or update the expense
                     //createOrUpdateExpense(description, amount, debts)
+                    groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
+                        if (group != null && groupId != null) {
+                            expenseRepository.createExpense(groupId, description, amount, debts)
+                        } else {
+                            // Handle the case where no group is found or there's an error
+                            Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                     dialog.dismiss()
                 }
 

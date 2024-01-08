@@ -33,9 +33,4 @@
         <!-- Dynamically add member debt views here -->
     </LinearLayout>
 
-    <Button
-        android:id="@+id/saveExpenseButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save"/>
 </LinearLayout>

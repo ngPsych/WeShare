@@ -13,12 +13,7 @@ class UserAdapter(context: Context,
                   private val users: List<String>,
                   private val onRemoveClicked: (String) -> Unit)
     : ArrayAdapter<String>(context, 0, users) {
-    interface MemberAdapterListener {
-        fun onRemoveClicked(email: String)
-    }
-    interface UserAdapterListener {
-        fun onRemoveClicked(email: String)
-    }
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_user, parent, false)
 
