@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         authManager = AuthManager()
+        notificationRepository = NotificationRepository()
 
         val emailEditText: EditText = findViewById(R.id.Email)
         val passwordEditText: EditText = findViewById(R.id.password)
