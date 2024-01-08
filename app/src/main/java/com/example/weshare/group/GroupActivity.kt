@@ -43,6 +43,8 @@ class GroupActivity : AppCompatActivity() {
         groupNameTextView.text = groupName
         descriptionTextView.text = groupDescription
 
+        getDebt(groupName, groupDescription)
+
         userRepository.getUserByEmail(authManager.getCurrentUserDetails()?.email.toString()) { user, _ ->
             user?.let {
                 val name = it.name
@@ -170,7 +172,30 @@ class GroupActivity : AppCompatActivity() {
         }
     }
 
+    private fun getDebt(groupName: String, groupDescription: String) {
+        groupRepository.getCurrentGroupDetails(groupName, groupDescription) { group, groupId ->
+            if (group != null && groupId != null) {
 
+                userRepository.getUserByEmail(authManager.getCurrentUserDetails()?.email.toString()) { user, _ ->
+                    user?.let {
+                        val email = it.email
+
+                        expenseRepository.calculateMemberTotalDebtInGroup(email, groupId) { isInGroup, totalDebt ->
+                            if (isInGroup) {
+                                val debtTextView: TextView = findViewById(R.id.debtTextView)
+                                debtTextView.text = totalDebt.toString()
+                            } else {
+                                Toast.makeText(this, "Member not found in the group or an error occurred", Toast.LENGTH_LONG).show()
+                            }
+                        }
+
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Error: Group not found.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
 
 }
