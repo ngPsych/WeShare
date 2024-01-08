@@ -44,8 +44,6 @@ class GroupActivity : AppCompatActivity() {
 
         FirebaseMessagingService.sharedPref = getSharedPreferences("sharedPref", MODE_PRIVATE)
 
-        //FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
-
         val groupName = intent.getStringExtra("GROUP_NAME") ?: "Group Name"
         val groupDescription = intent.getStringExtra("GROUP_DESCRIPTION") ?: "Description"
 
@@ -169,9 +167,7 @@ class GroupActivity : AppCompatActivity() {
                                                     // Step 3: Send notification using FCM token
                                                     it.fcmToken?.let { it1 ->
                                                         PushNotification(
-                                                            //Notification("WeShare", "New expenses from the group: $groupName"),
-                                                            "WeShare",
-                                                            "New expenses from the group: $groupName",
+                                                            Notification("WeShare", "New expenses from the group: $groupName"),
                                                             it1
                                                         ).also {
                                                             sendNotification(it)
@@ -259,10 +255,10 @@ class GroupActivity : AppCompatActivity() {
 
     private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
         try {
-            Log.d(TAG, "Sending notification: ${Gson().toJson(notification)}")
             val response = RetrofitInstance.api.postNotification(notification)
             if (response.isSuccessful) {
-                Log.d(TAG, "Response: ${Gson().toJson(response)}")
+                val responseBody = response.body()?.string()
+                Log.d(TAG, "Response Body: $responseBody")
             } else {
                 val errorString = response.errorBody()?.string()
                 Log.e(TAG, "Error: $errorString")
